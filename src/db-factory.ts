@@ -4,6 +4,7 @@ import { Note } from './types.js';
 import * as memoryDb from './db.js';
 import * as mysqlDb from './db-mysql.js';
 import * as sqliteDb from './db-sqlite.js';
+import * as supabaseDb from './db-supabase.js';
 
 // Database interface
 export interface Database {
@@ -84,6 +85,48 @@ class MySqlDbWrapper implements Database {
   }
 }
 
+// Supabase DB wrapper
+class SupabaseDbWrapper implements Database {
+  private initialized = false;
+  
+  private async ensureInitialized() {
+    if (!this.initialized) {
+      await supabaseDb.createTable();
+      this.initialized = true;
+    }
+  }
+  
+  async createNote(text: string): Promise<Note> {
+    await this.ensureInitialized();
+    return supabaseDb.createNote(text);
+  }
+  
+  async listNotes(): Promise<Note[]> {
+    await this.ensureInitialized();
+    return supabaseDb.listNotes();
+  }
+  
+  async getNote(id: string): Promise<Note | undefined> {
+    await this.ensureInitialized();
+    return supabaseDb.getNote(id);
+  }
+  
+  async updateNote(id: string, patch: Partial<Pick<Note, 'text' | 'summary' | 'tags'>>): Promise<Note | undefined> {
+    await this.ensureInitialized();
+    return supabaseDb.updateNote(id, patch);
+  }
+  
+  async searchNotes(q: string | undefined, tag: string | undefined): Promise<Note[]> {
+    await this.ensureInitialized();
+    return supabaseDb.searchNotes(q, tag);
+  }
+  
+  async deleteNote(id: string): Promise<boolean> {
+    await this.ensureInitialized();
+    return supabaseDb.deleteNote(id);
+  }
+}
+
 // SQLite DB wrapper
 class SqliteDbWrapper implements Database {
   private initialized = false;
@@ -130,11 +173,21 @@ class SqliteDbWrapper implements Database {
 export function getDatabase(): Database {
   const dbType = process.env.DB_TYPE || 'sqlite';
   
+  // Force memory database in serverless environments
+  const isServerless = process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME || process.env.NETLIFY;
+  
+  if (isServerless && dbType === 'sqlite') {
+    console.warn('⚠️  SQLite not supported in serverless environment, using memory database');
+    return new MemoryDbWrapper();
+  }
+  
   switch (dbType.toLowerCase()) {
     case 'mysql':
       return new MySqlDbWrapper();
     case 'memory':
       return new MemoryDbWrapper();
+    case 'supabase':
+      return new SupabaseDbWrapper();
     case 'sqlite':
     default:
       return new SqliteDbWrapper();
