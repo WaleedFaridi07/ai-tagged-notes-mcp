@@ -56,8 +56,8 @@ export async function createNote(text: string): Promise<Note> {
     text: data.text,
     summary: data.summary,
     tags: data.tags ? JSON.parse(data.tags) : undefined,
-    createdAt: new Date(data.created_at),
-    updatedAt: new Date(data.updated_at)
+    createdAt: data.created_at,
+    updatedAt: data.updated_at
   };
 }
 
@@ -79,8 +79,8 @@ export async function listNotes(): Promise<Note[]> {
     text: row.text,
     summary: row.summary,
     tags: row.tags ? JSON.parse(row.tags) : undefined,
-    createdAt: new Date(row.created_at),
-    updatedAt: new Date(row.updated_at)
+    createdAt: row.created_at,
+    updatedAt: row.updated_at
   }));
 }
 
@@ -106,8 +106,8 @@ export async function getNote(id: string): Promise<Note | undefined> {
     text: data.text,
     summary: data.summary,
     tags: data.tags ? JSON.parse(data.tags) : undefined,
-    createdAt: new Date(data.created_at),
-    updatedAt: new Date(data.updated_at)
+    createdAt: data.created_at,
+    updatedAt: data.updated_at
   };
 }
 
@@ -142,8 +142,8 @@ export async function updateNote(
     text: data.text,
     summary: data.summary,
     tags: data.tags ? JSON.parse(data.tags) : undefined,
-    createdAt: new Date(data.created_at),
-    updatedAt: new Date(data.updated_at)
+    createdAt: data.created_at,
+    updatedAt: data.updated_at
   };
 }
 
@@ -172,8 +172,8 @@ export async function searchNotes(q?: string, tag?: string): Promise<Note[]> {
     text: row.text,
     summary: row.summary,
     tags: row.tags ? JSON.parse(row.tags) : undefined,
-    createdAt: new Date(row.created_at),
-    updatedAt: new Date(row.updated_at)
+    createdAt: row.created_at,
+    updatedAt: row.updated_at
   }));
 }
 
