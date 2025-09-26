@@ -15,9 +15,5 @@
       "src": "/(.*)",
       "dest": "/api/index.ts"
     }
-  ],
-  "env": {
-    "AI_PROVIDER": "llama",
-    "DB_TYPE": "memory"
-  }
+  ]
 }

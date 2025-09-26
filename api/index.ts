@@ -63,7 +63,7 @@ app.post('/api/notes/:id/enrich', async (req, res) => {
     }
 
     console.log(`🤖 Enriching note: ${note.text.substring(0, 50)}...`);
-    
+
     const enrichResult = await enrichWithAI(note.text);
     const updatedNote = await updateNote(req.params.id, {
       summary: enrichResult.summary,
@@ -89,8 +89,8 @@ app.delete('/api/notes/:id', async (req, res) => {
 
 // Health check
 app.get('/api/health', (req, res) => {
-  res.json({ 
-    status: 'ok', 
+  res.json({
+    status: 'ok',
     timestamp: new Date().toISOString(),
     version: '1.0.0',
     env: {
@@ -113,10 +113,10 @@ app.get('/api/debug/note/:id', async (req, res) => {
     console.log('Debug: Looking for note ID:', req.params.id);
     console.log('Debug: DB_TYPE:', process.env.DB_TYPE);
     console.log('Debug: SUPABASE_URL:', process.env.SUPABASE_URL ? 'set' : 'not set');
-    
+
     const note = await getNote(req.params.id);
     console.log('Debug: Note found:', note ? 'yes' : 'no');
-    
+
     res.json({
       noteId: req.params.id,
       found: !!note,
@@ -128,7 +128,7 @@ app.get('/api/debug/note/:id', async (req, res) => {
     });
   } catch (error) {
     console.error('Debug error:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       error: error instanceof Error ? error.message : 'Unknown error',
       noteId: req.params.id,
       env: {
