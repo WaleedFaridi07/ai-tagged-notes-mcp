@@ -4,16 +4,19 @@ A comprehensive note-taking system with AI-powered enrichment, featuring multipl
 
 ## 🌟 Features
 
-- **AI-Powered Enrichment**: Generate smart summaries and relevant tags using OpenAI
-- **Multiple Interfaces**: Web UI, MCP protocol, and REST API
-- **Flexible Storage**: SQLite (default), MySQL, or in-memory options
-- **MCP Integration**: Works seamlessly with Kiro IDE
-- **Modern React Frontend**: Beautiful, responsive web interface with custom UI components
-- **Full CRUD Operations**: Create, read, update, and delete notes and tags
-- **Custom UI Components**: Toast notifications and confirmation modals
-- **Loading States**: Comprehensive loading indicators for all operations
-- **TypeScript**: Full type safety throughout the codebase
-- **Zero Configuration**: Works out of the box with SQLite
+- **🤖 AI-Powered Enrichment**: Generate smart summaries and relevant tags using:
+  - **Direct Llama** (Free, Local, Zero Setup) - Recommended ⭐
+  - **Groq** (Free Tier, Lightning Fast) - Great for production
+  - **OpenAI** (Paid, Highest Quality) - Premium option
+- **🌐 Multiple Interfaces**: Web UI, MCP protocol, and REST API
+- **💾 Flexible Storage**: SQLite (default), Supabase (cloud), or in-memory options
+- **⚡ MCP Integration**: Works seamlessly with Kiro IDE
+- **🎨 Modern React Frontend**: Beautiful, responsive web interface with custom UI components
+- **📝 Full CRUD Operations**: Create, read, update, and delete notes and tags
+- **🎯 Custom UI Components**: Toast notifications and confirmation modals
+- **⏳ Loading States**: Comprehensive loading indicators for all operations
+- **🔒 TypeScript**: Full type safety throughout the codebase
+- **🚀 Zero Configuration**: Works out of the box with SQLite and Direct Llama
 
 ## 🏗️ Architecture
 
@@ -35,8 +38,8 @@ A comprehensive note-taking system with AI-powered enrichment, featuring multipl
                     ┌─────────────┴─────────────┐
                     │     Database Layer        │
                     │  ┌─────────┬─────────┐    │
-                    │  │ SQLite  │ MySQL   │    │
-                    │  │(default)│(optional)│    │
+                    │  │ SQLite  │Supabase │    │
+                    │  │(default)│ (cloud) │    │
                     │  └─────────┴─────────┘    │
                     └───────────────────────────┘
 ```
@@ -153,15 +156,15 @@ DB_FILE=./notes.db
 - ✅ Perfect for development and small deployments
 - ✅ No server installation required
 
-### MySQL (Optional)
+### Supabase (Cloud PostgreSQL)
 ```bash
-DB_TYPE=mysql
-DB_HOST=localhost
-DB_PORT=3306
-DB_USER=root
-DB_PASSWORD=your_password
-DB_NAME=notes_db
+DB_TYPE=supabase
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_ANON_KEY=your_anon_key_here
 ```
+- ✅ Persistent cloud storage
+- ✅ Real-time capabilities
+- ✅ Generous free tier
 
 ### In-Memory (Testing)
 ```bash
@@ -170,99 +173,332 @@ DB_TYPE=memory
 - ⚠️ Data is lost on restart
 - ✅ Fastest for testing
 
+### 🔄 How to Switch Databases
+
+**Step 1**: Stop the application (`Ctrl+C`)
+**Step 2**: Edit your `.env` file
+**Step 3**: Change the `DB_TYPE` and related settings
+**Step 4**: Restart the application (`npm start`)
+
+#### Switch to SQLite (Default)
+```bash
+# Edit .env
+DB_TYPE=sqlite
+DB_FILE=./notes.db
+# Restart: npm start
+# Your notes will be saved in notes.db file
+```
+
+#### Switch to Supabase (Cloud)
+```bash
+# First: Create Supabase project at https://supabase.com
+# Run: SQL from supabase-setup.sql in your project
+# Edit .env
+DB_TYPE=supabase
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_ANON_KEY=eyJ...your_key_here
+# Restart: npm start
+```
+
+#### Switch to Memory (Testing)
+```bash
+# Edit .env
+DB_TYPE=memory
+# Remove DB_FILE, SUPABASE_* variables
+# Restart: npm start
+# ⚠️ All data will be lost when you restart
+```
+
+### 📊 Database Comparison
+
+| Database | Persistence | Setup | Best For | Data Location |
+|----------|-------------|-------|----------|---------------|
+| **SQLite** | ✅ File | None | Development, Small apps | Local file |
+| **Supabase** | ✅ Cloud | 5 min | Production, Collaboration | Cloud |
+| **Memory** | ❌ Temporary | None | Testing, Demos | RAM |
+
 ## 🤖 AI Configuration
 
 **The system works perfectly without any AI setup!** It will use rule-based enrichment as a fallback.
 
-### AI Provider Options
+### 🚀 AI Provider Options (Choose One)
 
-#### 1. 🆓 **Ollama (Recommended - Completely Free & Local)**
+#### 1. 🆓 **Direct Llama (Recommended - Zero Setup)**
+```bash
+# No installation required! Just configure in .env
+AI_PROVIDER=llama
+# Model downloads automatically on first use (~50MB)
+```
+- ✅ **Completely free** - No API keys or limits
+- ✅ **Zero setup** - Works out of the box
+- ✅ **Privacy first** - All processing happens locally
+- ✅ **Offline capable** - No internet needed after download
+
+#### 2. 🆓 **Groq (Free Tier - Lightning Fast)**
+```bash
+# Get free API key from https://console.groq.com/keys
+AI_PROVIDER=groq
+GROQ_API_KEY=gsk_your_groq_api_key_here
+```
+- ✅ **Free tier** - 6,000 requests/minute
+- ✅ **Extremely fast** - Sub-second responses
+- ✅ **High quality** - Llama 3.1 models
+- ✅ **Production ready** - Reliable cloud service
+
+#### 3. 💰 **OpenAI (Paid - Highest Quality)**
+```bash
+# Get API key from https://platform.openai.com/api-keys
+AI_PROVIDER=openai
+OPENAI_API_KEY=sk-proj-your-api-key-here
+```
+- ✅ **Best quality** - GPT-4 level summaries
+- ✅ **Most reliable** - Industry standard
+- ⚠️ **Paid service** - ~$0.002 per enrichment
+- ✅ **Advanced features** - Best tag extraction
+
+#### 4. 🆓 **Ollama (Advanced Local Setup)**
 ```bash
 # Install Ollama from https://ollama.ai
 curl -fsSL https://ollama.ai/install.sh | sh
 
-# Pull a lightweight model
+# Pull a model
 ollama pull llama3.2:3b
 
 # Configure in .env
+AI_PROVIDER=ollama
 OLLAMA_BASE_URL=http://localhost:11434
 OLLAMA_MODEL=llama3.2:3b
-AI_PROVIDER=ollama
+```
+- ✅ **Free and local** - No API costs
+- ✅ **Customizable** - Choose your own models
+- ⚠️ **Requires setup** - Manual installation needed
+- ✅ **Privacy** - Everything stays local
+
+### 📊 AI Provider Comparison
+
+| Provider | Cost | Speed | Quality | Local | Setup |
+|----------|------|-------|---------|-------|-------|
+| **Direct Llama** ⭐ | Free | Medium | Good | ✅ Yes | None |
+| **Groq** | Free Tier | Very Fast | Very Good | ❌ No | API Key |
+| **OpenAI** | Paid | Fast | Excellent | ❌ No | API Key |
+| **Ollama** | Free | Fast | Very Good | ✅ Yes | Install |
+| **Rule-based** | Free | Instant | Basic | ✅ Yes | None |
+
+**Recommendation**: Start with **Direct Llama** for zero setup, upgrade to **Groq** for production speed.
+
+### 🔄 How to Switch AI Providers
+
+**Step 1**: Edit your `.env` file
+**Step 2**: Change the `AI_PROVIDER` value
+**Step 3**: Add required API keys (if needed)
+**Step 4**: Restart the application
+
+#### Switch to Direct Llama (Default)
+```bash
+# Edit .env
+AI_PROVIDER=llama
+# Remove any API keys - not needed
+# Restart: npm start
 ```
 
-#### 2. 🆓 **Groq (Free Tier - Fast Inference)**
+#### Switch to Groq (Fast & Free)
 ```bash
-# Get free API key from https://console.groq.com/keys
-GROQ_API_KEY=your_groq_api_key_here
+# Edit .env
 AI_PROVIDER=groq
+GROQ_API_KEY=gsk_your_actual_key_here
+# Restart: npm start
 ```
 
-#### 3. 🆓 **Hugging Face (Free Tier)**
+#### Switch to OpenAI (Premium)
 ```bash
-# Get free API key from https://huggingface.co/settings/tokens
-HUGGINGFACE_API_KEY=your_hf_api_key_here
-AI_PROVIDER=huggingface
-```
-
-#### 4. 💰 **OpenAI (Paid)**
-```bash
-# Get API key from https://platform.openai.com/api-keys
-OPENAI_API_KEY=sk-proj-your-api-key-here
+# Edit .env
 AI_PROVIDER=openai
+OPENAI_API_KEY=sk-proj-your_actual_key_here
+# Restart: npm start
 ```
 
-### AI Features Comparison
+#### Switch to Ollama (Advanced Local)
+```bash
+# First install Ollama: https://ollama.ai
+# Pull a model: ollama pull llama3.2:3b
+# Edit .env
+AI_PROVIDER=ollama
+OLLAMA_BASE_URL=http://localhost:11434
+OLLAMA_MODEL=llama3.2:3b
+# Restart: npm start
+```
 
-| Provider | Cost | Speed | Quality | Local |
-|----------|------|-------|---------|-------|
-| **Ollama** | Free | Medium | Good | ✅ Yes |
-| **Groq** | Free Tier | Very Fast | Good | ❌ No |
-| **Hugging Face** | Free Tier | Slow | Fair | ❌ No |
-| **OpenAI** | Paid | Fast | Excellent | ❌ No |
-| **Rule-based** | Free | Instant | Basic | ✅ Yes |
+#### Disable AI (Rule-Based Only)
+```bash
+# Edit .env
+AI_PROVIDER=
+# Or comment out: # AI_PROVIDER=llama
+# Restart: npm start
+```
 
 ### Without AI (Rule-Based Fallback)
-- Summary: First 97 characters + "..." (if longer)
-- Tags: First 5 unique words from the text
-- Still fully functional for all note management features
+- **Summary**: First 97 characters + "..." (if longer)
+- **Tags**: First 5 unique words from the text
+- **Still fully functional** for all note management features
 
-## 🔌 MCP Integration (Kiro IDE)
+## 🔌 MCP Integration (AI Agents & IDEs)
 
-### Setup for Kiro
+This project works as a **Model Context Protocol (MCP) server** for AI agents and IDEs like Kiro, GitHub Copilot, and other MCP-compatible tools.
 
-1. **Add to your MCP configuration** (`~/.kiro/settings/mcp.json`):
-   ```json
-   {
-     "mcpServers": {
-       "notes": {
-         "command": "node",
-         "args": ["/path/to/ai-tagged-notes-mcp/dist/mcp-stdio.js"],
-         "env": {
-           "OPENAI_API_KEY": "your-api-key",
-           "DB_TYPE": "sqlite",
-           "DB_FILE": "/path/to/ai-tagged-notes-mcp/notes.db"
-         },
-         "disabled": false,
-         "autoApprove": []
-       }
-     }
-   }
-   ```
+### 🚀 Quick MCP Setup
 
-2. **Build the MCP server**:
-   ```bash
-   npm run build
-   ```
+#### 1. **Build the MCP Server**
+```bash
+git clone <repository-url>
+cd ai-tagged-notes-mcp
+npm install
+npm run build
+```
 
-3. **Restart Kiro** to load the MCP server
+#### 2. **Test MCP Server**
+```bash
+npm run mcp:start
+# Should show: "MCP server listening on stdio"
+```
 
-### MCP Tools Available
+#### 3. **Configure Your Agent/IDE**
 
-- `create_note`: Create a new note
-- `get_note`: Retrieve a note by ID
-- `search_notes`: Search notes by text or tags
-- `enrich_note`: AI-enhance a note with summary and tags
-- `delete_note`: Delete a note by ID
+### 🤖 Kiro IDE Integration
+
+**Add to your MCP configuration** (`~/.kiro/settings/mcp.json`):
+
+```json
+{
+  "mcpServers": {
+    "ai-notes": {
+      "command": "node",
+      "args": ["/absolute/path/to/ai-tagged-notes-mcp/dist/mcp-stdio.js"],
+      "env": {
+        "AI_PROVIDER": "llama",
+        "DB_TYPE": "sqlite",
+        "DB_FILE": "/absolute/path/to/ai-tagged-notes-mcp/notes.db"
+      },
+      "disabled": false,
+      "autoApprove": ["create_note", "search_notes", "enrich_note"]
+    }
+  }
+}
+```
+
+**Important**: Use **absolute paths** for both the script and database file.
+
+### 🐙 GitHub Copilot Integration
+
+**Add to your MCP configuration** (location varies by setup):
+
+```json
+{
+  "mcpServers": {
+    "ai-notes": {
+      "command": "node",
+      "args": ["/absolute/path/to/ai-tagged-notes-mcp/dist/mcp-stdio.js"],
+      "env": {
+        "AI_PROVIDER": "groq",
+        "GROQ_API_KEY": "your_groq_key_here",
+        "DB_TYPE": "sqlite"
+      }
+    }
+  }
+}
+```
+
+### 🔧 Other MCP Clients
+
+**Generic MCP configuration**:
+- **Command**: `node`
+- **Args**: `["/path/to/dist/mcp-stdio.js"]`
+- **Transport**: `stdio`
+- **Environment**: Set `AI_PROVIDER`, `DB_TYPE`, and related variables
+
+### 🛠️ Available MCP Tools
+
+| Tool | Description | Parameters |
+|------|-------------|------------|
+| `create_note` | Create a new note | `text: string` |
+| `search_notes` | Search notes by text or tags | `q?: string, tag?: string` |
+| `get_note` | Get a specific note by ID | `id: string` |
+| `enrich_note` | Add AI-generated summary and tags | `id: string` |
+| `delete_note` | Delete a note | `id: string` |
+
+### 📝 MCP Usage Examples
+
+#### Create and Enrich a Note
+```javascript
+// In your AI agent or IDE
+const note = await mcp.callTool('create_note', {
+  text: 'Meeting with client about Q4 roadmap. Discussed new features, timeline, and budget constraints.'
+});
+
+const enriched = await mcp.callTool('enrich_note', { id: note.id });
+// Result: summary="Client meeting covering Q4 roadmap, features, timeline, and budget"
+//         tags=["meeting", "client", "Q4", "roadmap", "features"]
+```
+
+#### Search and Organize Notes
+```javascript
+// Find related notes
+const relatedNotes = await mcp.callTool('search_notes', { 
+  q: 'roadmap' 
+});
+
+// Search by tag
+const meetings = await mcp.callTool('search_notes', { 
+  tag: 'meeting' 
+});
+```
+
+### 🔧 MCP Configuration Tips
+
+#### For Development
+```json
+{
+  "env": {
+    "AI_PROVIDER": "llama",
+    "DB_TYPE": "memory"
+  }
+}
+```
+
+#### For Production
+```json
+{
+  "env": {
+    "AI_PROVIDER": "groq",
+    "GROQ_API_KEY": "your_key",
+    "DB_TYPE": "supabase",
+    "SUPABASE_URL": "your_url",
+    "SUPABASE_ANON_KEY": "your_key"
+  }
+}
+```
+
+### 🐛 MCP Troubleshooting
+
+#### Server Not Starting
+```bash
+# Check if build is complete
+npm run build
+
+# Test MCP server manually
+npm run mcp:start
+```
+
+#### Connection Issues
+- ✅ Use **absolute paths** in configuration
+- ✅ Ensure the project is built (`npm run build`)
+- ✅ Check environment variables are set correctly
+- ✅ Restart your IDE/agent after configuration changes
+
+#### Permission Issues
+```bash
+# Make sure the script is executable
+chmod +x dist/mcp-stdio.js
+```
 
 ## 📡 REST API
 
@@ -353,7 +589,7 @@ ai-tagged-notes-mcp/
 │   ├── mcp.ts             # MCP HTTP router
 │   ├── db-factory.ts      # Database factory
 │   ├── db-sqlite.ts       # SQLite implementation
-│   ├── db-mysql.ts        # MySQL implementation
+│   ├── db-supabase.ts     # Supabase implementation
 │   ├── db.ts              # In-memory implementation
 │   ├── ai.ts              # OpenAI integration
 │   └── types.ts           # TypeScript types
@@ -371,18 +607,33 @@ ai-tagged-notes-mcp/
 ## 🔧 Environment Variables
 
 ```bash
-# API Configuration
-OPENAI_API_KEY=sk-proj-...  # Required for AI features
+# AI Configuration (Choose one)
+AI_PROVIDER=llama                    # llama|groq|openai|ollama (default: llama)
+
+# Direct Llama (default - no additional config needed)
+# Model downloads automatically on first use
+
+# Groq (free tier, very fast)
+# GROQ_API_KEY=gsk_your_groq_key_here
+
+# OpenAI (paid, highest quality)
+# OPENAI_API_KEY=sk-proj-your_key_here
+
+# Ollama (local, requires installation)
+# OLLAMA_BASE_URL=http://localhost:11434
+# OLLAMA_MODEL=llama3.2:3b
+
+# Server Configuration
 PORT=8080                   # Server port
+MCP_PORT=8090              # MCP server port
 
 # Database Configuration
-DB_TYPE=sqlite              # sqlite|mysql|memory
+DB_TYPE=sqlite              # sqlite|supabase|memory
 DB_FILE=./notes.db          # SQLite file path
-DB_HOST=localhost           # MySQL host
-DB_PORT=3306                # MySQL port
-DB_USER=root                # MySQL user
-DB_PASSWORD=                # MySQL password
-DB_NAME=notes_db            # MySQL database name
+
+# Supabase Configuration (for cloud storage)
+# SUPABASE_URL=https://your-project.supabase.co
+# SUPABASE_ANON_KEY=your_anon_key_here
 ```
 
 ## 🚨 Troubleshooting
@@ -402,7 +653,7 @@ DB_NAME=notes_db            # MySQL database name
 
 3. **Database connection issues**
    - SQLite: Check file permissions
-   - MySQL: Verify server is running and credentials are correct
+   - Supabase: Verify URL and API key are correct
 
 4. **AI enrichment not working**
    - Verify OpenAI API key is set
@@ -415,6 +666,78 @@ Enable debug logging:
 ```bash
 DEBUG=* npm run dev
 ```
+
+## 📋 Quick Reference
+
+### 🔄 Switch AI Provider
+```bash
+# Edit .env file
+AI_PROVIDER=llama     # Direct Llama (free, local)
+AI_PROVIDER=groq      # Groq (free tier, fast) + GROQ_API_KEY
+AI_PROVIDER=openai    # OpenAI (paid, premium) + OPENAI_API_KEY
+AI_PROVIDER=ollama    # Ollama (local, advanced) + OLLAMA_*
+AI_PROVIDER=          # Disable AI (rule-based only)
+```
+
+### 🗄️ Switch Database
+```bash
+# Edit .env file
+DB_TYPE=sqlite        # Local file (default)
+DB_TYPE=supabase      # Cloud PostgreSQL + SUPABASE_*
+DB_TYPE=memory        # Temporary (testing only)
+```
+
+### 🚀 Common Commands
+```bash
+npm start             # Start the application
+npm run build         # Build for production
+npm run dev           # Development mode
+npm run mcp:start     # Start MCP server only
+npm run get-url       # Get current Vercel production URL
+```
+
+### 🔌 MCP Integration
+```bash
+# Build MCP server
+npm run build
+
+# Test MCP server
+npm run mcp:start
+
+# Add to ~/.kiro/settings/mcp.json:
+{
+  "mcpServers": {
+    "ai-notes": {
+      "command": "node",
+      "args": ["/absolute/path/to/dist/mcp-stdio.js"],
+      "env": { "AI_PROVIDER": "llama", "DB_TYPE": "sqlite" }
+    }
+  }
+}
+```
+
+### 🌐 Access Points
+- **Local Web UI**: http://localhost:8080
+- **Local API**: http://localhost:8080/api
+- **Health Check**: http://localhost:8080/api/health
+- **MCP**: stdio connection on port 8090
+
+### 🚀 Live Demo
+- **Production App**: [Latest Deployment](https://vercel.com/waleed-ahmad-faridis-projects/ai-tagged-notes-mcp)
+- **Current URL**: Run `node scripts/get-vercel-url.js` to get the latest URL
+
+### 🔗 Set Up Stable URL (Optional)
+To avoid changing URLs on each deployment:
+
+1. **Custom Domain** (Recommended):
+   - Go to Vercel Dashboard → Your Project → Settings → Domains
+   - Add your domain (e.g., `ai-notes.yourdomain.com`)
+   - This URL never changes
+
+2. **Vercel Production Domain**:
+   - Your project gets a stable URL: `ai-tagged-notes-mcp.vercel.app`
+   - Go to Vercel Dashboard → Settings → Domains → Add Domain
+   - Use your project name as the subdomain
 
 ## 🤝 Contributing
 
@@ -430,7 +753,10 @@ MIT License - see LICENSE file for details
 
 ## 🙏 Acknowledgments
 
-- OpenAI for AI capabilities
-- Model Context Protocol (MCP) for integration framework
-- SQLite for reliable file-based storage
-- React for the modern frontend framework
+- **Hugging Face Transformers** for Direct Llama capabilities
+- **Groq** for lightning-fast AI inference
+- **OpenAI** for premium AI capabilities
+- **Supabase** for cloud database infrastructure
+- **Model Context Protocol (MCP)** for integration framework
+- **SQLite** for reliable file-based storage
+- **React** for the modern frontend framework

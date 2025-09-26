@@ -1,0 +1,41 @@
+name: Update Vercel URL in README
+
+on:
+  # Run after successful Vercel deployment
+  deployment_status:
+  # Also allow manual trigger
+  workflow_dispatch:
+
+jobs:
+  update-readme:
+    if: github.event.deployment_status.state == 'success' && github.event.deployment_status.environment_url
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Update README with latest Vercel URL
+        run: |
+          # Extract the Vercel URL from deployment
+          VERCEL_URL="${{ github.event.deployment_status.environment_url }}"
+          
+          # Update README.md
+          sed -i "s|https://ai-tagged-notes-.*\.vercel\.app|$VERCEL_URL|g" README.md
+          
+          # Check if there were changes
+          if git diff --quiet README.md; then
+            echo "No changes needed"
+            exit 0
+          fi
+          
+          # Commit and push changes
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add README.md
+          git commit -m "🔗 Update Vercel URL to latest deployment: $VERCEL_URL"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

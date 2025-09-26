@@ -2,7 +2,6 @@ import { Note } from './types.js';
 
 // Import all database implementations
 import * as memoryDb from './db.js';
-import * as mysqlDb from './db-mysql.js';
 import * as sqliteDb from './db-sqlite.js';
 import * as supabaseDb from './db-supabase.js';
 
@@ -43,47 +42,7 @@ class MemoryDbWrapper implements Database {
   }
 }
 
-// MySQL DB wrapper
-class MySqlDbWrapper implements Database {
-  private initialized = false;
-  
-  private async ensureInitialized() {
-    if (!this.initialized) {
-      await mysqlDb.createTable();
-      this.initialized = true;
-    }
-  }
-  
-  async createNote(text: string): Promise<Note> {
-    await this.ensureInitialized();
-    return mysqlDb.createNote(text);
-  }
-  
-  async listNotes(): Promise<Note[]> {
-    await this.ensureInitialized();
-    return mysqlDb.listNotes();
-  }
-  
-  async getNote(id: string): Promise<Note | undefined> {
-    await this.ensureInitialized();
-    return mysqlDb.getNote(id);
-  }
-  
-  async updateNote(id: string, patch: Partial<Pick<Note, 'text' | 'summary' | 'tags'>>): Promise<Note | undefined> {
-    await this.ensureInitialized();
-    return mysqlDb.updateNote(id, patch);
-  }
-  
-  async searchNotes(q: string | undefined, tag: string | undefined): Promise<Note[]> {
-    await this.ensureInitialized();
-    return mysqlDb.searchNotes(q, tag);
-  }
-  
-  async deleteNote(id: string): Promise<boolean> {
-    await this.ensureInitialized();
-    return mysqlDb.deleteNote(id);
-  }
-}
+// MySQL support removed - use Supabase for production PostgreSQL
 
 // Supabase DB wrapper
 class SupabaseDbWrapper implements Database {
@@ -182,8 +141,6 @@ export function getDatabase(): Database {
   }
   
   switch (dbType.toLowerCase()) {
-    case 'mysql':
-      return new MySqlDbWrapper();
     case 'memory':
       return new MemoryDbWrapper();
     case 'supabase':

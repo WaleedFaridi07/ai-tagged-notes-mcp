@@ -46,4 +46,15 @@ models/
 # Temporary files
 tmp/
 temp/
-.vercel
+
+# Deployment
+.vercel/
+.netlify/
+
+# Test files
+test-*.js
+*test.log
+
+# Coverage reports
+coverage/
+.nyc_output/
