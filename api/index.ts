@@ -121,7 +121,7 @@ app.get('/api/debug/note/:id', async (req, res) => {
   } catch (error) {
     console.error('Debug error:', error);
     res.status(500).json({ 
-      error: error.message,
+      error: error instanceof Error ? error.message : 'Unknown error',
       noteId: req.params.id,
       env: {
         DB_TYPE: process.env.DB_TYPE,
