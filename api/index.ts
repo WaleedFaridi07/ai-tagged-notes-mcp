@@ -13,6 +13,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Serve static files from frontend build
+app.use(express.static(path.join(process.cwd(), 'frontend/build')));
+
 // API Routes
 app.post('/api/notes', async (req, res) => {
   try {
@@ -97,6 +100,11 @@ app.get('/api/health', (req, res) => {
       SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY ? 'set' : 'not set'
     }
   });
+});
+
+// Serve React app for all non-API routes
+app.get('*', (req, res) => {
+  res.sendFile(path.join(process.cwd(), 'frontend/build', 'index.html'));
 });
 
 // Debug endpoint to test specific note
