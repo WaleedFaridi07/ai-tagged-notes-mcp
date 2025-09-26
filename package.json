@@ -13,7 +13,9 @@
     "lint": "eslint . --ext .ts,.tsx",
     "test": "node --test",
     "mcp:dev": "tsx src/mcp-stdio.ts",
-    "mcp:start": "node dist/mcp-stdio.js"
+    "mcp:start": "node dist/mcp-stdio.js",
+    "vercel-build": "npm run build && node build-frontend.js",
+    "deploy": "vercel --prod"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.18.2",
@@ -34,9 +36,11 @@
     "@types/uuid": "^9.0.7",
     "@typescript-eslint/eslint-plugin": "^8.8.1",
     "@typescript-eslint/parser": "^8.8.1",
+    "@vercel/node": "^3.2.29",
     "eslint": "^9.10.0",
     "tsx": "^4.19.2",
-    "typescript": "^5.5.4"
+    "typescript": "^5.5.4",
+    "vercel": "^32.7.2"
   },
   "engines": {
     "node": ">=20.0.0"
