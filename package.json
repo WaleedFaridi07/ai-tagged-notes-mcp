@@ -14,7 +14,7 @@
     "test": "node --test",
     "mcp:dev": "tsx src/mcp-stdio.ts",
     "mcp:start": "node dist/mcp-stdio.js",
-    "vercel-build": "npm run build && node build-frontend.js",
+    "vercel-build": "npm run build && cd frontend && npm install && npm run build",
     "deploy": "vercel --prod"
   },
   "dependencies": {

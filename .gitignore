@@ -46,3 +46,4 @@ models/
 # Temporary files
 tmp/
 temp/
+.vercel
