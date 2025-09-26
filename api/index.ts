@@ -77,6 +77,19 @@ app.post('/api/notes/:id/enrich', async (req, res) => {
   }
 });
 
+app.patch('/api/notes/:id', async (req, res) => {
+  try {
+    const updatedNote = await updateNote(req.params.id, req.body);
+    if (!updatedNote) {
+      return res.status(404).json({ error: 'Note not found' });
+    }
+    res.json(updatedNote);
+  } catch (error) {
+    console.error('Error updating note:', error);
+    res.status(500).json({ error: 'Failed to update note' });
+  }
+});
+
 app.delete('/api/notes/:id', async (req, res) => {
   try {
     await deleteNote(req.params.id);

@@ -331,10 +331,7 @@ function App() {
               className="btn btn-secondary"
             >
               {loading ? (
-                <>
-                  <span className="spinner"></span>
-                  Loading...
-                </>
+                'Loading...'
               ) : (
                 'Refresh'
               )}
