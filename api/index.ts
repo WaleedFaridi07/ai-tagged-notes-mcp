@@ -52,7 +52,7 @@ app.get('/api/notes/:id', async (req, res) => {
   }
 });
 
-app.put('/api/notes/:id/enrich', async (req, res) => {
+app.post('/api/notes/:id/enrich', async (req, res) => {
   try {
     const note = await getNote(req.params.id);
     if (!note) {
@@ -89,8 +89,46 @@ app.get('/api/health', (req, res) => {
   res.json({ 
     status: 'ok', 
     timestamp: new Date().toISOString(),
-    version: '1.0.0'
+    version: '1.0.0',
+    env: {
+      DB_TYPE: process.env.DB_TYPE || 'not set',
+      AI_PROVIDER: process.env.AI_PROVIDER || 'not set',
+      SUPABASE_URL: process.env.SUPABASE_URL ? 'set' : 'not set',
+      SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY ? 'set' : 'not set'
+    }
   });
+});
+
+// Debug endpoint to test specific note
+app.get('/api/debug/note/:id', async (req, res) => {
+  try {
+    console.log('Debug: Looking for note ID:', req.params.id);
+    console.log('Debug: DB_TYPE:', process.env.DB_TYPE);
+    console.log('Debug: SUPABASE_URL:', process.env.SUPABASE_URL ? 'set' : 'not set');
+    
+    const note = await getNote(req.params.id);
+    console.log('Debug: Note found:', note ? 'yes' : 'no');
+    
+    res.json({
+      noteId: req.params.id,
+      found: !!note,
+      note: note,
+      env: {
+        DB_TYPE: process.env.DB_TYPE,
+        SUPABASE_URL: process.env.SUPABASE_URL ? 'set' : 'not set'
+      }
+    });
+  } catch (error) {
+    console.error('Debug error:', error);
+    res.status(500).json({ 
+      error: error.message,
+      noteId: req.params.id,
+      env: {
+        DB_TYPE: process.env.DB_TYPE,
+        SUPABASE_URL: process.env.SUPABASE_URL ? 'set' : 'not set'
+      }
+    });
+  }
 });
 
 // Export for Vercel
