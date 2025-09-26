@@ -61,8 +61,8 @@ app.delete('/api/notes/:id', async (req, res) => {
 });
 
 app.get('/api/search', async (req, res) => {
-  const q = (req.query.q as string|undefined);
-  const tag = (req.query.tag as string|undefined);
+  const q = (req.query.q as string | undefined);
+  const tag = (req.query.tag as string | undefined);
   res.json(await searchNotes(q, tag));
 });
 
@@ -74,9 +74,9 @@ app.get('*', (req, res) => {
   if (req.path.startsWith('/api/') || req.path.startsWith('/mcp/')) {
     return res.status(404).json({ error: 'API endpoint not found' });
   }
-  
+
   const frontendIndexPath = path.join(process.cwd(), 'frontend', 'build', 'index.html');
-  
+
   try {
     if (require('fs').existsSync(frontendIndexPath)) {
       res.sendFile(frontendIndexPath);

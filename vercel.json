@@ -21,7 +21,7 @@
     }
   ],
   "env": {
-    "AI_PROVIDER": "openai",
-    "DB_TYPE": "memory"
+    "AI_PROVIDER": "groq",
+    "DB_TYPE": "supabase"
   }
 }
