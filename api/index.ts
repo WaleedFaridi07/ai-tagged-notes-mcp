@@ -86,7 +86,11 @@ app.delete('/api/notes/:id', async (req, res) => {
 
 // Health check
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+  res.json({ 
+    status: 'ok', 
+    timestamp: new Date().toISOString(),
+    version: '1.0.0'
+  });
 });
 
 // Export for Vercel
