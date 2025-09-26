@@ -501,21 +501,7 @@ npm run mcp:start
 - **MCP**: stdio connection on port 8090
 
 ### 🚀 Live Demo
-- **Production App**: [Latest Deployment](https://vercel.com/waleed-ahmad-faridis-projects/ai-tagged-notes-mcp)
-- **Current URL**: Run `node scripts/get-vercel-url.js` to get the latest URL
-
-### 🔗 Set Up Stable URL (Optional)
-To avoid changing URLs on each deployment:
-
-1. **Custom Domain** (Recommended):
-   - Go to Vercel Dashboard → Your Project → Settings → Domains
-   - Add your domain (e.g., `ai-notes.yourdomain.com`)
-   - This URL never changes
-
-2. **Vercel Production Domain**:
-   - Your project gets a stable URL: `ai-tagged-notes-mcp.vercel.app`
-   - Go to Vercel Dashboard → Settings → Domains → Add Domain
-   - Use your project name as the subdomain
+- **Production App**: [Latest Deployment](https://ai-tagged-notes-mcp.vercel.app/)
 
 ## 🤝 Contributing
 
@@ -524,10 +510,6 @@ To avoid changing URLs on each deployment:
 3. Make your changes
 4. Add tests if applicable
 5. Submit a pull request
-
-## 📄 License
-
-MIT License - see LICENSE file for details
 
 ## 🙏 Acknowledgments
 
