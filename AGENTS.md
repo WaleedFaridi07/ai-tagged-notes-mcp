@@ -4,46 +4,14 @@ This document provides comprehensive information for AI agents and developers wo
 
 ## 🚀 Quick Start for Agents
 
-### 1. Zero-Setup Installation
 ```bash
 git clone <repository-url>
 cd ai-tagged-notes-mcp
-npm install
-npm run build
-npm start
-```
-
-### 2. Default Configuration (Works Immediately)
-- **AI Provider**: Direct Llama (free, local, zero setup)
-- **Database**: SQLite (single file, no server needed)
-- **Interface**: MCP + Web UI + REST API
-
-### 3. Test with MCP
-```bash
-# Start MCP server
+npm install && npm run build
 npm run mcp:start
-
-# Or integrate with Kiro IDE using the configuration below
 ```
 
-**Result**: Fully functional note-taking system with AI enrichment in under 2 minutes!
-
-## 🤖 System Overview
-
-The AI Tagged Notes system is a multi-interface note management platform designed for seamless integration with AI agents, IDEs, and automation tools.
-
-### Core Capabilities
-- **📝 Full CRUD Operations**: Create, read, update, and delete notes and tags
-- **🤖 AI Enhancement**: Automatic summarization and tag generation with multiple providers:
-  - **Direct Llama** (Free, Local, Zero Setup) - Default
-  - **Groq** (Free Tier, Lightning Fast)
-  - **OpenAI** (Paid, Highest Quality)
-  - **Ollama** (Local, Customizable)
-- **🌐 Multiple Interfaces**: MCP, REST API, and Web UI
-- **💾 Persistent Storage**: SQLite, Supabase, or in-memory options
-- **🔍 Real-time Search**: Full-text search across notes, summaries, and tags
-- **🎨 Custom UI Components**: Toast notifications and confirmation modals
-- **⏳ Loading States**: Comprehensive visual feedback for all operations
+**Result**: Fully functional MCP server with AI-powered note management in under 2 minutes!
 
 ## 🔌 MCP Integration
 
@@ -335,24 +303,17 @@ Response:
 
 ## 🧠 AI Enhancement Details
 
-### OpenAI Integration
-- **Model**: GPT-4o-mini (configurable)
-- **Max Tokens**: 150 for summaries
-- **Response Format**: JSON with summary and tags
+### AI Processing
+- **Summary**: ≤25 words, concise overview
+- **Tags**: 1-5 relevant keywords
+- **Fallback**: Rule-based if AI unavailable (first 97 chars + first 5 words)
 
-### AI Prompt Template
+### Prompt Template
 ```
 Summarize in <= 25 words and propose 1-5 short keyword tags for:
-
 {note_text}
-
 Return JSON with keys: summary, tags.
 ```
-
-### Fallback Behavior
-If OpenAI API is unavailable or fails:
-- **Summary**: First 97 characters + "..." (if longer than 100 chars)
-- **Tags**: First 5 unique words from the text
 
 ## 🗄️ Data Models
 
@@ -377,48 +338,37 @@ interface Note {
 
 ### Environment Variables
 ```bash
-# AI Configuration (Choose one provider)
-AI_PROVIDER=llama                 # llama|groq|openai|ollama (default: llama)
+# AI Provider
+AI_PROVIDER=llama                 # llama|groq|openai|ollama
+GROQ_API_KEY=gsk_...             # For Groq
+OPENAI_API_KEY=sk-proj-...       # For OpenAI
+OLLAMA_BASE_URL=http://localhost:11434  # For Ollama
+OLLAMA_MODEL=llama3.2:3b         # For Ollama
 
-# Direct Llama (default - zero setup)
-# No additional configuration needed - model downloads automatically
+# Database
+DB_TYPE=sqlite                   # sqlite|supabase|memory
+DB_FILE=./notes.db              # SQLite file path
+SUPABASE_URL=https://...        # For Supabase
+SUPABASE_ANON_KEY=eyJ...        # For Supabase
 
-# Groq (free tier, lightning fast)
-# GROQ_API_KEY=gsk_your_groq_key_here
-
-# OpenAI (paid, highest quality)
-# OPENAI_API_KEY=sk-proj-your-key_here
-
-# Ollama (local, requires installation)
-# OLLAMA_BASE_URL=http://localhost:11434
-# OLLAMA_MODEL=llama3.2:3b
-
-# Database configuration
-DB_TYPE=sqlite                    # sqlite|supabase|memory
-DB_FILE=./notes.db               # SQLite file path
-
-# Supabase (cloud PostgreSQL)
-# SUPABASE_URL=https://your-project.supabase.co
-# SUPABASE_ANON_KEY=your_anon_key_here
-
-# Server configuration
-PORT=8080                        # HTTP server port
-MCP_PORT=8090                    # MCP server port
+# Server
+PORT=8080
+MCP_PORT=8090
 ```
 
-### MCP Configuration Example
-For Kiro IDE or other MCP clients:
+### MCP Configuration Examples
 
+#### Kiro IDE (`~/.kiro/settings/mcp.json`)
 ```json
 {
   "mcpServers": {
-    "notes": {
+    "ai-notes": {
       "command": "node",
-      "args": ["/path/to/ai-tagged-notes-mcp/dist/mcp-stdio.js"],
+      "args": ["/absolute/path/to/ai-tagged-notes-mcp/dist/mcp-stdio.js"],
       "env": {
         "AI_PROVIDER": "llama",
         "DB_TYPE": "sqlite",
-        "DB_FILE": "/path/to/ai-tagged-notes-mcp/notes.db"
+        "DB_FILE": "/absolute/path/to/ai-tagged-notes-mcp/notes.db"
       },
       "disabled": false,
       "autoApprove": ["create_note", "search_notes", "enrich_note"]
@@ -427,70 +377,55 @@ For Kiro IDE or other MCP clients:
 }
 ```
 
+#### GitHub Copilot / Other MCP Clients
+```json
+{
+  "mcpServers": {
+    "ai-notes": {
+      "command": "node",
+      "args": ["/absolute/path/to/ai-tagged-notes-mcp/dist/mcp-stdio.js"],
+      "env": {
+        "AI_PROVIDER": "groq",
+        "GROQ_API_KEY": "your_groq_key_here",
+        "DB_TYPE": "sqlite"
+      }
+    }
+  }
+}
+```
+
+**Important**: Use **absolute paths** for both the script and database file.
+
 ## 🤖 AI Providers for Agents
 
-### Provider Selection Strategy
+### Quick Provider Selection
 
-**For Development/Testing:**
-- **Direct Llama**: Zero setup, completely free, works offline
-- **Memory**: Fast testing without AI overhead
+| Provider | Best For | Setup | Cost |
+|----------|----------|-------|------|
+| **Direct Llama** | Development, Privacy | 0 min | Free |
+| **Groq** | Production, Speed | 2 min | Free tier |
+| **OpenAI** | Premium Quality | 2 min | ~$0.002/enrichment |
+| **Ollama** | Custom Models | 10 min | Free |
 
-**For Production:**
-- **Groq**: Free tier, extremely fast, reliable
-- **OpenAI**: Paid but highest quality, best for critical applications
+### Configuration Examples
 
-**For Privacy-Sensitive Applications:**
-- **Direct Llama**: All processing happens locally
-- **Ollama**: Full control over models and data
-
-### Provider Configuration Examples
-
-#### Direct Llama (Recommended for Agents)
 ```bash
+# Direct Llama (Recommended)
 AI_PROVIDER=llama
-# No additional configuration needed
-# Model downloads automatically on first enrichment (~50MB)
-```
 
-**Benefits for Agents:**
-- ✅ No API keys to manage
-- ✅ No rate limits or costs
-- ✅ Works offline after initial download
-- ✅ Consistent performance
-- ✅ Privacy-first approach
-
-#### Groq (Best for Production Agents)
-```bash
+# Groq (Production)
 AI_PROVIDER=groq
 GROQ_API_KEY=gsk_your_groq_key_here
-```
 
-**Benefits for Agents:**
-- ✅ 6,000 requests/minute free tier
-- ✅ Sub-second response times
-- ✅ High-quality Llama 3.1 models
-- ✅ Reliable cloud infrastructure
-
-#### OpenAI (Premium Quality)
-```bash
+# OpenAI (Premium)
 AI_PROVIDER=openai
 OPENAI_API_KEY=sk-proj-your_key_here
+
+# Ollama (Advanced)
+AI_PROVIDER=ollama
+OLLAMA_BASE_URL=http://localhost:11434
+OLLAMA_MODEL=llama3.2:3b
 ```
-
-**Benefits for Agents:**
-- ✅ Highest quality summaries and tags
-- ✅ Most reliable and consistent
-- ✅ Advanced reasoning capabilities
-- ⚠️ Costs ~$0.002 per enrichment
-
-### AI Performance Comparison for Agents
-
-| Provider | Setup Time | Cost/1000 enrichments | Avg Response Time | Quality Score |
-|----------|------------|----------------------|-------------------|---------------|
-| **Direct Llama** | 0 min | $0 | 3-5s | 8/10 |
-| **Groq** | 2 min | $0 (free tier) | 0.5-1s | 8.5/10 |
-| **OpenAI** | 2 min | ~$2 | 1-2s | 9.5/10 |
-| **Ollama** | 10 min | $0 | 2-4s | 8.5/10 |
 
 ## 🚀 Agent Use Cases
 
@@ -636,33 +571,33 @@ try {
 ## 🔐 Security Considerations
 
 ### API Key Security
-- **Never commit API keys to version control**
-- Use `.env` files for local development (already in `.gitignore`)
-- The system works without an API key using rule-based enrichment
-- Set `OPENAI_API_KEY=your_openai_api_key_here` in `.env.example` as placeholder
-
-### API Security
-- No authentication currently implemented
-- Consider adding API keys for production
-- Rate limiting recommended for public deployments
+- Never commit API keys to version control
+- Use `.env` files (already in `.gitignore`)
+- System works without API keys using rule-based enrichment
 
 ### Data Privacy
 - Notes stored locally by default (SQLite)
-- OpenAI API calls include note content (only when API key is configured)
-- Consider data encryption for sensitive notes
+- AI API calls include note content (when configured)
+- Consider Direct Llama or Ollama for sensitive data
 
-### Environment Security
-- Store API keys in environment variables
-- Use `.env` files for local development
-- Never commit API keys to version control
-- The `.env` file is already in `.gitignore`
+## 🧪 Testing & Troubleshooting
 
-## 🧪 Testing Integration
-
-### Unit Tests
+### Quick Tests
 ```bash
+# Unit tests
 npm test
+
+# MCP integration test
+npm run mcp:start
+
+# Health check
+curl http://localhost:8080/api/health
 ```
+
+### Common Issues
+- **MCP not connecting**: Use absolute paths in configuration
+- **Build errors**: Run `npm run build` after changes
+- **Permission issues**: `chmod +x dist/mcp-stdio.js`
 
 ### Integration Testing
 ```javascript
@@ -675,61 +610,6 @@ const retrieved = await mcp.callTool('get_note', { id: testNote.id });
 assert.equal(retrieved.text, 'Test note for integration testing');
 ```
 
-### Load Testing
-```bash
-# Test with multiple concurrent requests
-for i in {1..100}; do
-  curl -X POST http://localhost:8080/api/notes \
-    -H "Content-Type: application/json" \
-    -d "{\"text\": \"Load test note $i\"}" &
-done
-```
+## 🤝 Contributing
 
-## 📈 Monitoring and Observability
-
-### Health Checks
-```http
-GET /health
-```
-
-Response:
-```json
-{ "ok": true }
-```
-
-### Logging
-- Server logs to console
-- MCP errors logged to stderr
-- Database operations logged in debug mode
-
-### Metrics
-Consider implementing:
-- Note creation rate
-- Search query performance
-- AI enrichment success rate
-- Database query times
-
-## 🤝 Contributing to Agent Integration
-
-### Adding New Tools
-1. Define tool schema in `src/mcp-stdio.ts`
-2. Implement handler function
-3. Add to HTTP API in `src/mcp.ts`
-4. Add database layer support in `src/db-*.ts`
-5. Update React frontend if needed
-6. Update documentation
-
-### Recent Updates
-- **Delete Operations**: Full CRUD support with delete functionality
-- **Custom UI Components**: Toast notifications and confirmation modals
-- **Loading States**: Comprehensive visual feedback
-- **Tag Management**: Individual tag removal capabilities
-- **Enhanced Error Handling**: Better user experience with custom dialogs
-
-### Custom AI Providers
-1. Extend `src/ai.ts`
-2. Add configuration options
-3. Implement fallback behavior
-4. Test with various input types
-
-This guide provides comprehensive information for integrating AI agents with the AI Tagged Notes system. For additional support or feature requests, please refer to the main README.md or create an issue in the repository.
+For extending the system with new MCP tools or AI providers, see the main [README.md](./README.md) for development setup and contribution guidelines.
