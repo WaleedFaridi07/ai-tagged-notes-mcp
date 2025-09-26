@@ -6,6 +6,7 @@ import { fileURLToPath } from 'url';
 import { enrichWithAI } from '../src/ai.js';
 import { createNote, listNotes, getNote, updateNote, deleteNote } from '../src/db-factory.js';
 import { Note } from '../src/types.js';
+import { buildMcpRouter } from '../src/mcp.js';
 
 const app = express();
 
@@ -15,6 +16,9 @@ app.use(express.json());
 
 // Serve static files from frontend build
 app.use(express.static(path.join(process.cwd(), 'frontend/build')));
+
+// Mount MCP HTTP routes
+app.use('/mcp', buildMcpRouter());
 
 // API Routes
 app.post('/api/notes', async (req, res) => {
