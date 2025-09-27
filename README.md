@@ -97,6 +97,115 @@ A comprehensive note-taking system with AI-powered enrichment, featuring multipl
    npm start
    ```
 
+## 🐳 Docker Setup
+
+### Quick Docker Start
+
+The easiest way to run the complete application with all dependencies:
+
+```bash
+# Clone and start with Docker
+git clone <repository-url>
+cd ai-tagged-notes-mcp
+docker-compose up -d
+
+# Access the application
+open http://localhost:8080
+```
+
+### Docker Features
+
+- **🚀 Zero Configuration**: Works out of the box with Direct Llama AI
+- **💾 Persistent Data**: SQLite database and AI models cached in Docker volumes
+- **🤖 Local AI Processing**: Direct Llama runs completely offline after initial model download
+- **🔒 Isolated Environment**: No conflicts with your local Node.js setup
+- **📦 Complete Stack**: Frontend, backend, database, and AI all included
+
+### Docker Commands
+
+```bash
+# Start the application
+docker-compose up -d
+
+# View logs (useful for first run to see AI model download)
+docker-compose logs -f
+
+# Stop the application
+docker-compose down
+
+# Update and restart
+docker-compose up -d --build
+
+# Clean restart (removes all data)
+docker-compose down -v && docker-compose up -d --build
+```
+
+### First Run with Docker
+
+When you first start with Docker, you'll see:
+
+```bash
+# Start and watch the logs
+docker-compose up -d && docker-compose logs -f
+
+# Expected output:
+# ✅ Frontend build found at: /app/frontend/build
+# HTTP API listening on :8080
+# Frontend available at: http://localhost:8080
+# 🤖 Using Direct Llama for AI enrichment
+# 🔄 Loading Llama model (first time may take a few minutes)...
+# ✅ AI enrichment successful with Direct Llama
+```
+
+### Docker vs Local Development
+
+| Method | Best For | AI Provider | Database | Setup Time |
+|--------|----------|-------------|----------|------------|
+| **Docker** | Testing complete app, demos | Direct Llama (local) | SQLite (persistent) | 2 minutes |
+| **Local Dev** | Development, hot reload | Any provider | Any database | 5 minutes |
+| **Vercel** | Production deployment | Groq (cloud) | Supabase (cloud) | Live |
+
+### Docker Environment Variables
+
+The Docker setup uses these defaults (can be customized in `docker-compose.yml`):
+
+```yaml
+environment:
+  AI_PROVIDER: llama          # Direct Llama (free, local)
+  DB_TYPE: sqlite            # SQLite (persistent in volume)
+  DB_FILE: /app/data/notes.db
+  PORT: 8080
+  MCP_PORT: 8090
+```
+
+### Docker Troubleshooting
+
+#### Container Won't Start
+```bash
+# Check logs
+docker-compose logs
+
+# Rebuild from scratch
+docker-compose down -v
+docker-compose up -d --build
+```
+
+#### AI Model Download Issues
+```bash
+# Check available disk space (models are ~50MB)
+docker system df
+
+# Watch model download progress
+docker-compose logs -f ai-notes
+```
+
+#### Port Conflicts
+```bash
+# Change port in docker-compose.yml
+ports:
+  - "3080:8080"  # Use port 3080 instead of 8080
+```
+
 ## 🛠️ Development
 
 ### Development Mode
@@ -467,10 +576,18 @@ DB_TYPE=memory        # Temporary (testing only)
 
 ### 🚀 Common Commands
 ```bash
+# Local Development
 npm start             # Start the application
 npm run build         # Build for production
 npm run dev           # Development mode
 npm run mcp:start     # Start MCP server only
+
+# Docker
+docker-compose up -d  # Start with Docker
+docker-compose logs -f # View logs
+docker-compose down   # Stop Docker containers
+
+# Deployment
 npm run get-url       # Get current Vercel production URL
 ```
 

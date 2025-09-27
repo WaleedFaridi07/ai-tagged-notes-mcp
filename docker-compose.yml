@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  ai-notes:
+    build: .
+    ports:
+      - "8080:8080"
+      - "8090:8090"  # MCP server port
+    environment:
+      # AI Configuration
+      AI_PROVIDER: llama  # Direct Llama (free, local, zero setup)
+      # GROQ_API_KEY: gsk_your_groq_key_here  # Uncomment for Groq
+      # OPENAI_API_KEY: sk-proj-your_openai_key_here  # Uncomment for OpenAI
+      
+      # Database Configuration
+      DB_TYPE: sqlite
+      DB_FILE: /app/data/notes.db
+      
+      # Server Configuration
+      PORT: 8080
+      MCP_PORT: 8090
+      NODE_ENV: production
+    volumes:
+      - notes-data:/app/data
+      - llama-models:/app/.cache  # Cache for Llama models
+    restart: unless-stopped
+    # Increase memory limit for Llama model
+    mem_limit: 2g
+    # Ensure container has enough resources
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+        reservations:
+          memory: 512M
+
+volumes:
+  notes-data:
+  llama-models:

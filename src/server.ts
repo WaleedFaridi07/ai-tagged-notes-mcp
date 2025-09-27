@@ -2,6 +2,7 @@ import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import path from 'path';
+import fs from 'fs';
 import { createNote, listNotes, getNote, updateNote, searchNotes, deleteNote } from './db-factory.js';
 import { enrichWithAI } from './ai.js';
 import { buildMcpRouter } from './mcp.js';
@@ -15,11 +16,14 @@ const frontendBuildPath = path.join(process.cwd(), 'frontend', 'build');
 
 // Serve React build files if they exist
 try {
-  if (require('fs').existsSync(frontendBuildPath)) {
+  if (fs.existsSync(frontendBuildPath)) {
     app.use(express.static(frontendBuildPath));
+    console.log(`✅ Frontend build found at: ${frontendBuildPath}`);
+  } else {
+    console.log(`⚠️ Frontend build not found at: ${frontendBuildPath}`);
   }
-} catch {
-  // React build not available, API-only mode
+} catch (error) {
+  console.log(`❌ Error checking frontend build:`, error);
 }
 
 app.get('/health', (_req, res) => res.json({ ok: true }));
@@ -78,12 +82,14 @@ app.get('*', (req, res) => {
   const frontendIndexPath = path.join(process.cwd(), 'frontend', 'build', 'index.html');
 
   try {
-    if (require('fs').existsSync(frontendIndexPath)) {
+    if (fs.existsSync(frontendIndexPath)) {
       res.sendFile(frontendIndexPath);
     } else {
+      console.log(`❌ Frontend index.html not found at: ${frontendIndexPath}`);
       res.status(404).json({ error: 'Frontend not built. Run: npm run build:frontend' });
     }
-  } catch {
+  } catch (error) {
+    console.log(`❌ Error serving frontend:`, error);
     res.status(404).json({ error: 'Frontend not available' });
   }
 });
