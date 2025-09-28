@@ -2,8 +2,12 @@
   "name": "mcp-notes-extension",
   "displayName": "MCP Notes Extension",
   "description": "VS Code extension to test MCP HTTP implementation",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "publisher": "local",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/WaleedFaridi07/ai-tagged-notes-mcp.git"
+  },
   "engines": {
     "vscode": "^1.74.0"
   },

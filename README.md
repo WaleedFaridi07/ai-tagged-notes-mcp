@@ -386,7 +386,8 @@ This project works as a **Model Context Protocol (MCP) server** for AI agents an
 | Tool | Description | Parameters |
 |------|-------------|------------|
 | `create_note` | Create a new note | `text: string` |
-| `search_notes` | Search notes by text or tags | `q?: string, tag?: string` |
+| `search_notes` | Search notes by text, summary, or tags | `q?: string` |
+| `list_recent_notes` | Get the latest 10 notes (most recently created) | None |
 | `get_note` | Get a specific note by ID | `id: string` |
 | `enrich_note` | Add AI-generated summary and tags | `id: string` |
 | `delete_note` | Delete a note | `id: string` |

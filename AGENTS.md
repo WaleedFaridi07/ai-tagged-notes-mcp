@@ -89,7 +89,7 @@ Retrieves a specific note by its ID.
 ```
 
 #### 3. `search_notes`
-Searches notes by text content or tags.
+Searches notes by text content, summary, or tags.
 
 **Input Schema:**
 ```json
@@ -99,10 +99,6 @@ Searches notes by text content or tags.
     "q": {
       "type": "string",
       "description": "Search query (searches text, summary, and tags)"
-    },
-    "tag": {
-      "type": "string",
-      "description": "Specific tag to filter by"
     }
   }
 }
@@ -124,17 +120,44 @@ Searches notes by text content or tags.
 
 **Example Usage:**
 ```javascript
-// Search by text
+// Search by text, summary, or tags
 await mcp.callTool('search_notes', { q: 'quarterly reports' });
-
-// Search by tag
-await mcp.callTool('search_notes', { tag: 'finance' });
-
-// Combined search
-await mcp.callTool('search_notes', { q: 'meeting', tag: 'urgent' });
+await mcp.callTool('search_notes', { q: 'finance' });
+await mcp.callTool('search_notes', { q: 'meeting' });
 ```
 
-#### 4. `enrich_note`
+#### 4. `list_recent_notes`
+Gets the latest 10 notes (most recently created).
+
+**Input Schema:**
+```json
+{
+  "type": "object",
+  "properties": {}
+}
+```
+
+**Output:**
+```json
+[
+  {
+    "id": "uuid",
+    "text": "note content",
+    "summary": "AI-generated summary",
+    "tags": ["tag1", "tag2"],
+    "createdAt": "2025-09-26T10:00:00.000Z",
+    "updatedAt": "2025-09-26T10:05:00.000Z"
+  }
+]
+```
+
+**Example Usage:**
+```javascript
+// Get recent notes (max 10)
+await mcp.callTool('list_recent_notes', {});
+```
+
+#### 5. `enrich_note`
 Enhances a note with AI-generated summary and tags.
 
 **Input Schema:**
@@ -164,7 +187,7 @@ Enhances a note with AI-generated summary and tags.
 }
 ```
 
-#### 5. `delete_note`
+#### 6. `delete_note`
 Deletes a note by its ID.
 
 **Input Schema:**
@@ -371,7 +394,7 @@ MCP_PORT=8090
         "DB_FILE": "/absolute/path/to/ai-tagged-notes-mcp/notes.db"
       },
       "disabled": false,
-      "autoApprove": ["create_note", "search_notes", "enrich_note"]
+      "autoApprove": ["create_note", "search_notes", "list_recent_notes", "enrich_note"]
     }
   }
 }
@@ -461,7 +484,7 @@ await mcp.callTool('enrich_note', { id: researchNote.id });
 ### 3. Task Management
 ```javascript
 // Search for pending tasks
-const tasks = await mcp.callTool('search_notes', { tag: 'todo' });
+const tasks = await mcp.callTool('search_notes', { q: 'todo' });
 
 // Create new task
 const task = await mcp.callTool('create_note', {
@@ -508,10 +531,10 @@ The search functionality covers:
 await mcp.callTool('search_notes', { q: 'meeting' });
 
 // Find urgent items
-await mcp.callTool('search_notes', { tag: 'urgent' });
+await mcp.callTool('search_notes', { q: 'urgent' });
 
 // Find urgent meetings
-await mcp.callTool('search_notes', { q: 'meeting', tag: 'urgent' });
+await mcp.callTool('search_notes', { q: 'meeting urgent' });
 ```
 
 ## 🛠️ Development Integration
