@@ -38,6 +38,19 @@ body {
   font-size: 1.1rem;
 }
 
+.keyboard-shortcuts {
+  margin-top: 8px;
+  padding: 8px 12px;
+  background: rgba(0, 123, 255, 0.1);
+  border-radius: 6px;
+  border-left: 3px solid #007bff;
+}
+
+.keyboard-shortcuts small {
+  color: #495057;
+  font-size: 0.875rem;
+}
+
 /* Toast Notifications */
 .toast-container {
   position: fixed;

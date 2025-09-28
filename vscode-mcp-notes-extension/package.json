@@ -1,0 +1,63 @@
+{
+  "name": "mcp-notes-extension",
+  "displayName": "MCP Notes Extension",
+  "description": "VS Code extension to test MCP HTTP implementation",
+  "version": "0.0.1",
+  "publisher": "local",
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:mcpNotes.createNote"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "mcpNotes.createNote",
+        "title": "MCP: Create Note"
+      },
+      {
+        "command": "mcpNotes.searchNotes",
+        "title": "MCP: Search Notes"
+      },
+      {
+        "command": "mcpNotes.listNotes",
+        "title": "MCP: List All Notes"
+      },
+      {
+        "command": "mcpNotes.enrichNote",
+        "title": "MCP: Enrich Selected Note"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "mcpNotes.createNote",
+        "key": "ctrl+shift+n",
+        "mac": "cmd+shift+n"
+      },
+      {
+        "command": "mcpNotes.searchNotes",
+        "key": "ctrl+shift+f",
+        "mac": "cmd+shift+f"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@types/node": "16.x",
+    "@types/vscode": "^1.74.0",
+    "typescript": "^4.9.4"
+  },
+  "dependencies": {
+    "@types/node-fetch": "^2.6.13",
+    "node-fetch": "^3.3.2"
+  }
+}

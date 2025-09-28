@@ -270,6 +270,9 @@ function App() {
         <header className="header">
           <h1>AI Tagged Notes</h1>
           <p>Create, search, and enrich your notes with AI-powered summaries and tags</p>
+          <div className="keyboard-shortcuts">
+            <small>💡 Tips: Ctrl+Enter to create • Enter to search • Click tags to remove</small>
+          </div>
         </header>
 
         {/* Toast Container */}
@@ -342,7 +345,7 @@ function App() {
         {/* Notes Section */}
         <section className="notes-section">
           <div className="notes-header">
-            <h2>Your Notes</h2>
+            <h2>Your Notes ({notes.length})</h2>
             <button 
               onClick={loadNotes} 
               disabled={loading}

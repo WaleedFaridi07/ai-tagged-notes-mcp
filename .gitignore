@@ -35,9 +35,15 @@ Thumbs.db
 
 # IDE files
 .vscode/
+!vscode-mcp-notes-extension/.vscode/
 .idea/
 *.swp
 *.swo
+
+# VS Code Extension build artifacts
+vscode-mcp-notes-extension/out/
+vscode-mcp-notes-extension/*.vsix
+vscode-mcp-notes-extension/node_modules/
 
 # AI model cache (optional - you might want to cache these)
 .cache/

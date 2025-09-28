@@ -361,6 +361,12 @@ AI_PROVIDER=ollama    # Ollama (local, advanced) + OLLAMA_*
 
 This project works as a **Model Context Protocol (MCP) server** for AI agents and IDEs.
 
+### 🎯 Multiple MCP Transports
+
+- **STDIO Transport** - For Claude Desktop, Kiro IDE integration
+- **HTTP Transport** - For web clients, VS Code extensions, browser tools
+- **VS Code Extension** - Demo extension in `vscode-mcp-notes-extension/`
+
 ### Quick MCP Setup
 
 1. **Build the MCP Server**
