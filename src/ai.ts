@@ -44,17 +44,13 @@ export async function enrichWithAI(text: string): Promise<EnrichResult> {
     console.log(`🤖 Using ${provider.name} for AI enrichment`);
     const result = await provider.enrich(text);
     
-    if (provider.name !== 'Rule-based') {
-      console.log(`✅ AI enrichment successful with ${provider.name}`);
-    }
+
     
     return result;
   } catch (error) {
     console.warn(`⚠️  ${provider.name} failed:`, (error as Error).message);
     
-    // If the selected provider fails and it's not rule-based, fall back to rule-based
     if (provider.name !== 'Rule-based') {
-      console.log('🔄 Falling back to rule-based enrichment');
       const fallback = new RuleBasedProvider();
       return await fallback.enrich(text);
     }
@@ -63,5 +59,4 @@ export async function enrichWithAI(text: string): Promise<EnrichResult> {
   }
 }
 
-// Export for testing and direct usage
 export { providers, getAvailableProvider };

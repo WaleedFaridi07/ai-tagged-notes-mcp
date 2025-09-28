@@ -1,11 +1,8 @@
 import { Note } from './types.js';
 
-// Import all database implementations
 import * as memoryDb from './db.js';
 import * as sqliteDb from './db-sqlite.js';
 import * as supabaseDb from './db-supabase.js';
-
-// Database interface
 export interface Database {
   createNote(text: string): Promise<Note> | Note;
   listNotes(): Promise<Note[]> | Note[];
@@ -15,7 +12,6 @@ export interface Database {
   deleteNote(id: string): Promise<boolean> | boolean;
 }
 
-// Wrapper to make memory DB async-compatible
 class MemoryDbWrapper implements Database {
   async createNote(text: string): Promise<Note> {
     return memoryDb.createNote(text);
@@ -42,9 +38,7 @@ class MemoryDbWrapper implements Database {
   }
 }
 
-// MySQL support removed - use Supabase for production PostgreSQL
 
-// Supabase DB wrapper
 class SupabaseDbWrapper implements Database {
   private initialized = false;
   
@@ -86,7 +80,6 @@ class SupabaseDbWrapper implements Database {
   }
 }
 
-// SQLite DB wrapper
 class SqliteDbWrapper implements Database {
   private initialized = false;
   
@@ -128,11 +121,9 @@ class SqliteDbWrapper implements Database {
   }
 }
 
-// Factory function to get the appropriate database
 export function getDatabase(): Database {
   const dbType = process.env.DB_TYPE || 'sqlite';
   
-  // Force memory database in serverless environments
   const isServerless = process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME || process.env.NETLIFY;
   
   if (isServerless && dbType === 'sqlite') {
@@ -151,7 +142,6 @@ export function getDatabase(): Database {
   }
 }
 
-// Export convenience functions that use the factory
 const db = getDatabase();
 
 export const createNote = (text: string) => db.createNote(text);

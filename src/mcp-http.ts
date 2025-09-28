@@ -198,6 +198,7 @@ export function buildMcpHttpRouter(): Router {
       });
 
     } catch (error: any) {
+      console.error('MCP HTTP tool execution error:', error?.message ?? 'Unknown error');
       res.json({
         jsonrpc: "2.0",
         id,

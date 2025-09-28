@@ -1,11 +1,9 @@
 import sqlite3 from 'sqlite3';
 import { Note } from './types.js';
 import { v4 as uuid } from 'uuid';
-import { promisify } from 'util';
 
 let db: sqlite3.Database | null = null;
 
-// Initialize SQLite database
 export function initDatabase(): sqlite3.Database {
   if (db) return db;
   
@@ -22,7 +20,6 @@ export function initDatabase(): sqlite3.Database {
   return db;
 }
 
-// Create the notes table if it doesn't exist
 export async function createTable(): Promise<void> {
   const database = initDatabase();
   
@@ -40,7 +37,6 @@ export async function createTable(): Promise<void> {
       if (err) {
         reject(err);
       } else {
-        console.log('Notes table created or already exists');
         resolve();
       }
     });

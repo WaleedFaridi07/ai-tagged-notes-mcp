@@ -19,13 +19,8 @@ function getSupabaseClient(): SupabaseClient {
   return supabase;
 }
 
-// Create the notes table if it doesn't exist
 export async function createTable(): Promise<void> {
-  const client = getSupabaseClient();
-  
-  // The table creation is handled by Supabase migrations
-  // We'll create it manually in the Supabase dashboard
-  console.log('✅ Supabase table ready');
+  // Table creation handled by Supabase
 }
 
 export async function createNote(text: string): Promise<Note> {

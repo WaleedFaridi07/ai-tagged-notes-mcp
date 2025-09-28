@@ -11,20 +11,12 @@ import { buildMcpHttpRouter } from '../src/mcp-http.js';
 
 const app = express();
 
-// Middleware
 app.use(cors());
 app.use(express.json());
-
-// Serve static files from frontend build
 app.use(express.static(path.join(process.cwd(), 'frontend/build')));
 
-// Mount MCP HTTP routes (proper MCP protocol)
 app.use('/mcp', buildMcpHttpRouter());
-
-// Mount legacy MCP routes (simple HTTP API)
 app.use('/mcp-legacy', buildMcpRouter());
-
-// API Routes
 app.post('/api/notes', async (req, res) => {
   try {
     const { text } = req.body;
@@ -70,8 +62,6 @@ app.post('/api/notes/:id/enrich', async (req, res) => {
       return res.status(404).json({ error: 'Note not found' });
     }
 
-    console.log(`🤖 Enriching note: ${note.text.substring(0, 50)}...`);
-
     const enrichResult = await enrichWithAI(note.text);
     const updatedNote = await updateNote(req.params.id, {
       summary: enrichResult.summary,
@@ -108,7 +98,6 @@ app.delete('/api/notes/:id', async (req, res) => {
   }
 });
 
-// Health check
 app.get('/api/health', (req, res) => {
   res.json({
     status: 'ok',
@@ -123,20 +112,13 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// Serve React app for all non-API routes
 app.get('*', (req, res) => {
   res.sendFile(path.join(process.cwd(), 'frontend/build', 'index.html'));
 });
 
-// Debug endpoint to test specific note
 app.get('/api/debug/note/:id', async (req, res) => {
   try {
-    console.log('Debug: Looking for note ID:', req.params.id);
-    console.log('Debug: DB_TYPE:', process.env.DB_TYPE);
-    console.log('Debug: SUPABASE_URL:', process.env.SUPABASE_URL ? 'set' : 'not set');
-
     const note = await getNote(req.params.id);
-    console.log('Debug: Note found:', note ? 'yes' : 'no');
 
     res.json({
       noteId: req.params.id,
@@ -160,5 +142,4 @@ app.get('/api/debug/note/:id', async (req, res) => {
   }
 });
 
-// Export for Vercel
 export default app;

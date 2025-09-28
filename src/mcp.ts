@@ -54,15 +54,10 @@ export function buildMcpRouter(): Router {
           return;
         }
         case 'enrich_note': {
-          console.log("=== MCP enrich_note called");
           const id = String(args?.id ?? '');
-          console.log("=== Note ID:", id);
           const note = await getNote(id);
-          console.log("=== Found note:", !!note);
           if (!note) return res.status(404).json({ ok: false, error: 'not_found' });
-          console.log("=== About to call enrichWithAI");
           const enrich = await enrichWithAI(note.text);
-          console.log("=== enrichWithAI returned:", enrich);
           res.json({ ok: true, result: await updateNote(id, enrich) });
           return;
         }
@@ -90,6 +85,7 @@ export function buildMcpRouter(): Router {
           res.status(400).json({ ok: false, error: 'unknown_tool' });
       }
     } catch (e: any) {
+      console.error('MCP tool execution error:', e?.message ?? 'Unknown error');
       res.status(500).json({ ok: false, error: e?.message ?? 'error' });
     }
   });
