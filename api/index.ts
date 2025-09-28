@@ -4,7 +4,7 @@ import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { enrichWithAI } from '../src/ai.js';
-import { createNote, listNotes, getNote, updateNote, deleteNote } from '../src/db-factory.js';
+import { createNote, listNotes, getNote, updateNote, deleteNote, searchNotes } from '../src/db-factory.js';
 import { Note } from '../src/types.js';
 import { buildMcpRouter } from '../src/mcp.js';
 import { buildMcpHttpRouter } from '../src/mcp-http.js';
@@ -110,6 +110,18 @@ app.get('/api/health', (req, res) => {
       SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY ? 'set' : 'not set'
     }
   });
+});
+
+app.get('/api/search', async (req, res) => {
+  try {
+    const q = req.query.q as string | undefined;
+    const tag = req.query.tag as string | undefined;
+    const results = await searchNotes(q, tag);
+    res.json(results);
+  } catch (error) {
+    console.error('Error searching notes:', error);
+    res.status(500).json({ error: 'Failed to search notes' });
+  }
 });
 
 app.get('*', (req, res) => {
