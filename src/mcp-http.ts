@@ -139,7 +139,7 @@ export function buildMcpHttpRouter(): Router {
         case 'mcp_notes_local_search_notes': {
           const q = args?.q ? String(args.q) : undefined;
           const tag = args?.tag ? String(args.tag) : undefined;
-          result = await searchNotes(q, tag);
+          result = await searchNotes(q);
           break;
         }
         case 'mcp_notes_local_get_note': {

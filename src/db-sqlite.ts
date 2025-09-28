@@ -165,21 +165,16 @@ export async function updateNote(
   });
 }
 
-export async function searchNotes(q: string | undefined, tag: string | undefined): Promise<Note[]> {
+export async function searchNotes(q: string | undefined): Promise<Note[]> {
   const database = initDatabase();
   
   let query = 'SELECT id, text, summary, tags, created_at, updated_at FROM notes WHERE 1=1';
   const params: any[] = [];
   
   if (q && q.trim()) {
-    query += ' AND (text LIKE ? OR summary LIKE ? OR tags LIKE ?)';
+    query += ' AND (LOWER(text) LIKE ? OR LOWER(summary) LIKE ? OR LOWER(tags) LIKE ?)';
     const searchTerm = `%${q.toLowerCase()}%`;
     params.push(searchTerm, searchTerm, searchTerm);
-  }
-  
-  if (tag && tag.trim()) {
-    query += ' AND tags LIKE ?';
-    params.push(`%"${tag.toLowerCase()}"%`);
   }
   
   query += ' ORDER BY created_at DESC';

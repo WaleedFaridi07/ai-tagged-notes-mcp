@@ -87,7 +87,7 @@ async function main() {
       },
     },
     async ({ q, tag }) => {
-      const res = await searchNotes(q, tag);
+      const res = await searchNotes(q);
       return { content: [{ type: "text", text: JSON.stringify(res) }] };
     }
   );

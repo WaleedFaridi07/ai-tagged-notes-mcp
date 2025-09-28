@@ -8,7 +8,7 @@ export interface Database {
   listNotes(): Promise<Note[]> | Note[];
   getNote(id: string): Promise<Note | undefined> | Note | undefined;
   updateNote(id: string, patch: Partial<Pick<Note, 'text' | 'summary' | 'tags'>>): Promise<Note | undefined> | Note | undefined;
-  searchNotes(q: string | undefined, tag: string | undefined): Promise<Note[]> | Note[];
+  searchNotes(q: string | undefined): Promise<Note[]> | Note[];
   deleteNote(id: string): Promise<boolean> | boolean;
 }
 
@@ -29,8 +29,8 @@ class MemoryDbWrapper implements Database {
     return memoryDb.updateNote(id, patch);
   }
   
-  async searchNotes(q: string | undefined, tag: string | undefined): Promise<Note[]> {
-    return memoryDb.searchNotes(q, tag);
+  async searchNotes(q: string | undefined): Promise<Note[]> {
+    return memoryDb.searchNotes(q);
   }
   
   async deleteNote(id: string): Promise<boolean> {
@@ -69,9 +69,9 @@ class SupabaseDbWrapper implements Database {
     return supabaseDb.updateNote(id, patch);
   }
   
-  async searchNotes(q: string | undefined, tag: string | undefined): Promise<Note[]> {
+  async searchNotes(q: string | undefined): Promise<Note[]> {
     await this.ensureInitialized();
-    return supabaseDb.searchNotes(q, tag);
+    return supabaseDb.searchNotes(q);
   }
   
   async deleteNote(id: string): Promise<boolean> {
@@ -110,9 +110,9 @@ class SqliteDbWrapper implements Database {
     return sqliteDb.updateNote(id, patch);
   }
   
-  async searchNotes(q: string | undefined, tag: string | undefined): Promise<Note[]> {
+  async searchNotes(q: string | undefined): Promise<Note[]> {
     await this.ensureInitialized();
-    return sqliteDb.searchNotes(q, tag);
+    return sqliteDb.searchNotes(q);
   }
   
   async deleteNote(id: string): Promise<boolean> {
@@ -148,5 +148,5 @@ export const createNote = (text: string) => db.createNote(text);
 export const listNotes = () => db.listNotes();
 export const getNote = (id: string) => db.getNote(id);
 export const updateNote = (id: string, patch: Partial<Pick<Note, 'text' | 'summary' | 'tags'>>) => db.updateNote(id, patch);
-export const searchNotes = (q: string | undefined, tag: string | undefined) => db.searchNotes(q, tag);
+export const searchNotes = (q: string | undefined) => db.searchNotes(q);
 export const deleteNote = (id: string) => db.deleteNote(id);

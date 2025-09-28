@@ -115,8 +115,7 @@ app.get('/api/health', (req, res) => {
 app.get('/api/search', async (req, res) => {
   try {
     const q = req.query.q as string | undefined;
-    const tag = req.query.tag as string | undefined;
-    const results = await searchNotes(q, tag);
+    const results = await searchNotes(q);
     res.json(results);
   } catch (error) {
     console.error('Error searching notes:', error);

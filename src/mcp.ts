@@ -64,7 +64,7 @@ export function buildMcpRouter(): Router {
         case 'search_notes': {
           const q = args?.q ? String(args.q) : undefined;
           const tag = args?.tag ? String(args.tag) : undefined;
-          res.json({ ok: true, result: await searchNotes(q, tag) });
+          res.json({ ok: true, result: await searchNotes(q) });
           return;
         }
         case 'get_note': {

@@ -94,7 +94,7 @@ app.get('/api/search', async (req, res) => {
   try {
     const q = (req.query.q as string | undefined);
     const tag = (req.query.tag as string | undefined);
-    res.json(await searchNotes(q, tag));
+    res.json(await searchNotes(q));
   } catch (error) {
     console.error('Error searching notes:', (error as Error).message);
     res.status(500).json({ error: 'Failed to search notes' });

@@ -26,7 +26,7 @@ export function updateNote(id: string, patch: Partial<Pick<Note,'text'|'summary'
   return updated;
 }
 
-export function searchNotes(q: string | undefined, tag: string | undefined): Note[] {
+export function searchNotes(q: string | undefined): Note[] {
   let arr = listNotes();
   if (q && q.trim()) {
     const s = q.toLowerCase();
@@ -35,10 +35,6 @@ export function searchNotes(q: string | undefined, tag: string | undefined): Not
       (n.summary?.toLowerCase().includes(s) ?? false) ||
       (n.tags?.some(t => t.toLowerCase().includes(s)) ?? false)
     );
-  }
-  if (tag && tag.trim()) {
-    const t = tag.toLowerCase();
-    arr = arr.filter(n => n.tags?.some(x => x.toLowerCase() == t));
   }
   return arr;
 }
