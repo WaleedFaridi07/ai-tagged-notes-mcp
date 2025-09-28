@@ -22,7 +22,7 @@ interface ConfirmDialog {
   isOpen: boolean;
   title: string;
   message: string;
-  onConfirm: () => void;
+  onConfirm: () => void | Promise<void>;
   onCancel: () => void;
 }
 
@@ -62,14 +62,13 @@ function App() {
   };
 
   // Show confirmation dialog
-  const showConfirmDialog = (title: string, message: string, onConfirm: () => void) => {
+  const showConfirmDialog = (title: string, message: string, onConfirm: () => void | Promise<void>) => {
     setConfirmDialog({
       isOpen: true,
       title,
       message,
-      onConfirm: () => {
-        onConfirm();
-        setConfirmDialog(prev => ({ ...prev, isOpen: false }));
+      onConfirm: async () => {
+        await onConfirm();
       },
       onCancel: () => {
         setConfirmDialog(prev => ({ ...prev, isOpen: false }));
@@ -198,8 +197,13 @@ function App() {
           
           showToast('Note deleted successfully!');
           loadNotes();
+          
+          // Close the modal after successful deletion
+          setConfirmDialog(prev => ({ ...prev, isOpen: false }));
         } catch (error) {
           showToast('Error deleting note: ' + (error as Error).message, 'error');
+          // Close the modal even on error
+          setConfirmDialog(prev => ({ ...prev, isOpen: false }));
         } finally {
           setDeletingNotes(prev => {
             const newSet = new Set(prev);
@@ -232,6 +236,20 @@ function App() {
     } catch (error) {
       showToast('Error removing tag: ' + (error as Error).message, 'error');
     }
+  };
+
+  // Show confirmation dialog for tag removal
+  const confirmRemoveTag = (noteId: string, tagToRemove: string) => {
+    setConfirmDialog({
+      isOpen: true,
+      title: 'Remove Tag',
+      message: `Are you sure you want to remove the tag "${tagToRemove}"?`,
+      onConfirm: async () => {
+        await removeTag(noteId, tagToRemove);
+        setConfirmDialog({ isOpen: false, title: '', message: '', onConfirm: () => {}, onCancel: () => {} });
+      },
+      onCancel: () => setConfirmDialog({ isOpen: false, title: '', message: '', onConfirm: () => {}, onCancel: () => {} }),
+    });
   };
 
   // Handle keyboard shortcuts
@@ -372,7 +390,10 @@ function App() {
           {/* Notes List */}
           <div className={`notes-container ${loading ? 'loading' : ''}`}>
             {loading ? (
-              <div className="loading">Loading notes...</div>
+              <div className="loading">
+                <div className="spinner"></div>
+                Loading notes...
+              </div>
             ) : notes.length === 0 ? (
               <div className="empty-state">
                 No notes found. Create your first note above!
@@ -397,7 +418,7 @@ function App() {
                         <span key={index} className="tag">
                           {tag}
                           <button
-                            onClick={() => removeTag(note.id, tag)}
+                            onClick={() => confirmRemoveTag(note.id, tag)}
                             className="tag-delete"
                             title="Remove tag"
                             disabled={deletingNotes.has(note.id) || enrichingNotes.has(note.id)}

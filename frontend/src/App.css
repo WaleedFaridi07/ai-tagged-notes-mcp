@@ -219,6 +219,7 @@ body {
 
 .modal-footer .btn-danger:hover {
   background: #d70015;
+  color: white;
   transform: translateY(-1px);
 }
 
@@ -416,15 +417,16 @@ body {
   gap: 12px;
 }
 
-.loading::before {
-  content: '';
-  width: 20px;
-  height: 20px;
-  border: 2px solid #e5e5e7;
-  border-top: 2px solid #007aff;
+.loading .spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid #e5e5e7;
+  border-top: 3px solid #007aff;
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
+
+
 
 .empty-state {
   text-align: center;
@@ -463,18 +465,7 @@ body {
   border-color: #ff3b30;
 }
 
-.note-card.deleting::after {
-  content: '';
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  width: 16px;
-  height: 16px;
-  border: 2px solid #ffcccc;
-  border-top: 2px solid #ff3b30;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
+
 
 .note-text {
   margin-bottom: 16px;
