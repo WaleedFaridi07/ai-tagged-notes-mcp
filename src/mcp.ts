@@ -26,6 +26,11 @@ const tools: Tool[] = [
     inputSchema: { type: "object", properties: { q: { type: "string" } } }
   },
   {
+    name: "list_recent_notes",
+    description: "Get the latest 10 notes (most recently created)",
+    inputSchema: { type: "object", properties: {} }
+  },
+  {
     name: "get_note",
     description: "Get a single note by id",
     inputSchema: { type: "object", properties: { id: { type: "string" } }, required: ["id"] }
@@ -64,6 +69,13 @@ export function buildMcpRouter(): Router {
         case 'search_notes': {
           const q = args?.q ? String(args.q) : undefined;
           res.json({ ok: true, result: await searchNotes(q) });
+          return;
+        }
+        case 'list_recent_notes': {
+          const notes = await listNotes();
+          // Return latest 10 notes (most recently created)
+          const recentNotes = notes.slice(0, 10);
+          res.json({ ok: true, result: recentNotes });
           return;
         }
         case 'get_note': {

@@ -3,7 +3,7 @@ import 'dotenv/config';
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
-import { createNote, getNote, updateNote, searchNotes, deleteNote } from "./db-factory.js";
+import { createNote, getNote, updateNote, searchNotes, deleteNote, listNotes } from "./db-factory.js";
 import { enrichWithAI } from "./ai.js";
 
 async function main() {
@@ -88,6 +88,21 @@ async function main() {
     async ({ q }) => {
       const res = await searchNotes(q);
       return { content: [{ type: "text", text: JSON.stringify(res) }] };
+    }
+  );
+
+  // list_recent_notes
+  server.registerTool(
+    "list_recent_notes",
+    {
+      description: "Get the latest 10 notes (most recently created)",
+      inputSchema: {},
+    },
+    async () => {
+      const notes = await listNotes();
+      // Return latest 10 notes (most recently created)
+      const recentNotes = notes.slice(0, 10);
+      return { content: [{ type: "text", text: JSON.stringify(recentNotes) }] };
     }
   );
 

@@ -179,6 +179,48 @@ export function activate(context: vscode.ExtensionContext) {
     }
   });
 
+  // Command: List Recent Notes (Latest 10)
+  const listRecentNotesCommand = vscode.commands.registerCommand('mcpNotes.listRecentNotes', async () => {
+    try {
+      vscode.window.withProgress({
+        location: vscode.ProgressLocation.Notification,
+        title: 'Loading recent notes...',
+        cancellable: false
+      }, async () => {
+        try {
+          const result = await mcpClient.callTool('list_recent_notes', {});
+          const notes = JSON.parse(result.content[0].text);
+          
+          if (notes.length === 0) {
+            vscode.window.showInformationMessage('No notes found. Create your first note!');
+            return;
+          }
+
+          // Show recent notes in Quick Pick
+          const items = notes.map((note: any) => ({
+            label: `📝 ${note.text.substring(0, 60)}${note.text.length > 60 ? '...' : ''}`,
+            description: `${note.tags?.length || 0} tags`,
+            detail: `Created: ${new Date(note.createdAt).toLocaleDateString()}`,
+            noteData: note
+          }));
+
+          const selected = await vscode.window.showQuickPick(items, {
+            placeHolder: `Latest ${notes.length} note(s)`,
+            ignoreFocusOut: true
+          });
+
+          if (selected) {
+            showNoteDetails((selected as any).noteData);
+          }
+        } catch (error: any) {
+          vscode.window.showErrorMessage(`❌ Failed to load recent notes: ${error.message}`);
+        }
+      });
+    } catch (error: any) {
+      vscode.window.showErrorMessage(`❌ Error: ${error.message}`);
+    }
+  });
+
   // Command: List All Notes
   const listNotesCommand = vscode.commands.registerCommand('mcpNotes.listNotes', async () => {
     try {
@@ -299,6 +341,7 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
     createNoteCommand,
     searchNotesCommand,
+    listRecentNotesCommand,
     listNotesCommand
   );
 }

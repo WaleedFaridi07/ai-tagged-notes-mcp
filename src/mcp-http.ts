@@ -1,6 +1,6 @@
 import type { Router } from 'express';
 import { Router as makeRouter } from 'express';
-import { createNote, updateNote, searchNotes, getNote, deleteNote } from './db-factory.js';
+import { createNote, updateNote, searchNotes, getNote, deleteNote, listNotes } from './db-factory.js';
 import { enrichWithAI } from './ai.js';
 
 // MCP Protocol Implementation for HTTP Transport
@@ -90,6 +90,14 @@ export function buildMcpHttpRouter(): Router {
             }
           },
           {
+            name: "list_recent_notes",
+            description: "Get the latest 10 notes (most recently created)",
+            inputSchema: {
+              type: "object",
+              properties: {}
+            }
+          },
+          {
             name: "delete_note",
             description: "Delete a note by id",
             inputSchema: {
@@ -138,6 +146,12 @@ export function buildMcpHttpRouter(): Router {
         case 'search_notes': {
           const q = args?.q ? String(args.q) : undefined;
           result = await searchNotes(q);
+          break;
+        }
+        case 'list_recent_notes': {
+          const notes = await listNotes();
+          // Return latest 10 notes (most recently created)
+          result = notes.slice(0, 10);
           break;
         }
         case 'get_note': {

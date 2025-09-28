@@ -31,6 +31,10 @@
       {
         "command": "mcpNotes.enrichNote",
         "title": "MCP: Enrich Selected Note"
+      },
+      {
+        "command": "mcpNotes.listRecentNotes",
+        "title": "MCP: List Recent Notes (Latest 10)"
       }
     ],
     "keybindings": [
@@ -43,6 +47,11 @@
         "command": "mcpNotes.searchNotes",
         "key": "ctrl+shift+f",
         "mac": "cmd+shift+f"
+      },
+      {
+        "command": "mcpNotes.listRecentNotes",
+        "key": "ctrl+shift+r",
+        "mac": "cmd+shift+r"
       }
     ]
   },
