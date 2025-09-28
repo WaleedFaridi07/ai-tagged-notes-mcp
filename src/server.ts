@@ -6,6 +6,7 @@ import fs from 'fs';
 import { createNote, listNotes, getNote, updateNote, searchNotes, deleteNote } from './db-factory.js';
 import { enrichWithAI } from './ai.js';
 import { buildMcpRouter } from './mcp.js';
+import { buildMcpHttpRouter } from './mcp-http.js';
 
 const app = express();
 app.use(cors());
@@ -102,6 +103,7 @@ app.get('/api/search', async (req, res) => {
 });
 
 app.use('/mcp', buildMcpRouter());
+app.use('/mcp-http', buildMcpHttpRouter());
 
 app.get('*', (req, res) => {
   if (req.path.startsWith('/api/') || req.path.startsWith('/mcp/')) {

@@ -80,13 +80,12 @@ async function main() {
   server.registerTool(
     "search_notes",
     {
-      description: "Search notes by free-text and/or tag",
+      description: "Search notes by free-text",
       inputSchema: {
-        q: z.string().optional(),
-        tag: z.string().optional(),
+        q: z.string().optional()
       },
     },
-    async ({ q, tag }) => {
+    async ({ q }) => {
       const res = await searchNotes(q);
       return { content: [{ type: "text", text: JSON.stringify(res) }] };
     }

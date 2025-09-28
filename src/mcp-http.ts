@@ -1,4 +1,4 @@
-import type { Request, Response, Router } from 'express';
+import type { Router } from 'express';
 import { Router as makeRouter } from 'express';
 import { createNote, updateNote, searchNotes, getNote, deleteNote } from './db-factory.js';
 import { enrichWithAI } from './ai.js';
@@ -47,7 +47,7 @@ export function buildMcpHttpRouter(): Router {
       result: {
         tools: [
           {
-            name: "mcp_notes_local_create_note",
+            name: "create_note",
             description: "Create a note with raw text",
             inputSchema: {
               type: "object",
@@ -58,7 +58,7 @@ export function buildMcpHttpRouter(): Router {
             }
           },
           {
-            name: "mcp_notes_local_enrich_note",
+            name: "enrich_note",
             description: "AI-enrich a note by id (summary + tags)",
             inputSchema: {
               type: "object",
@@ -69,7 +69,7 @@ export function buildMcpHttpRouter(): Router {
             }
           },
           {
-            name: "mcp_notes_local_get_note",
+            name: "get_note",
             description: "Get a single note by id",
             inputSchema: {
               type: "object",
@@ -80,18 +80,17 @@ export function buildMcpHttpRouter(): Router {
             }
           },
           {
-            name: "mcp_notes_local_search_notes",
-            description: "Search notes by free-text and/or tag",
+            name: "search_notes",
+            description: "Search notes by free-text",
             inputSchema: {
               type: "object",
               properties: {
-                q: { type: "string" },
-                tag: { type: "string" }
+                q: { type: "string" }
               }
             }
           },
           {
-            name: "mcp_notes_local_delete_note",
+            name: "delete_note",
             description: "Delete a note by id",
             inputSchema: {
               type: "object",
@@ -115,11 +114,11 @@ export function buildMcpHttpRouter(): Router {
       let result;
 
       switch (name) {
-        case 'mcp_notes_local_create_note': {
+        case 'create_note': {
           result = await createNote(String(args?.text ?? ''));
           break;
         }
-        case 'mcp_notes_local_enrich_note': {
+        case 'enrich_note': {
           const noteId = String(args?.id ?? '');
           const note = await getNote(noteId);
           if (!note) {
@@ -136,13 +135,12 @@ export function buildMcpHttpRouter(): Router {
           result = await updateNote(noteId, enrich);
           break;
         }
-        case 'mcp_notes_local_search_notes': {
+        case 'search_notes': {
           const q = args?.q ? String(args.q) : undefined;
-          const tag = args?.tag ? String(args.tag) : undefined;
           result = await searchNotes(q);
           break;
         }
-        case 'mcp_notes_local_get_note': {
+        case 'get_note': {
           const noteId = String(args?.id ?? '');
           result = await getNote(noteId);
           if (!result) {
@@ -157,7 +155,7 @@ export function buildMcpHttpRouter(): Router {
           }
           break;
         }
-        case 'mcp_notes_local_delete_note': {
+        case 'delete_note': {
           const noteId = String(args?.id ?? '');
           const deleted = await deleteNote(noteId);
           if (!deleted) {

@@ -23,7 +23,7 @@ const tools: Tool[] = [
   {
     name: "search_notes",
     description: "Search notes by free-text and/or tag",
-    inputSchema: { type: "object", properties: { q: { type: "string" }, tag: { type: "string" } } }
+    inputSchema: { type: "object", properties: { q: { type: "string" } } }
   },
   {
     name: "get_note",
@@ -63,7 +63,6 @@ export function buildMcpRouter(): Router {
         }
         case 'search_notes': {
           const q = args?.q ? String(args.q) : undefined;
-          const tag = args?.tag ? String(args.tag) : undefined;
           res.json({ ok: true, result: await searchNotes(q) });
           return;
         }
